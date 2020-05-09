@@ -38,7 +38,7 @@ namespace TransactionApp.Controllers
                        
                 }
 
-                _transactionsService.ProcessImportAsync(postedFile.InputStream);
+                _transactionsService.ProcessTransactionsAsync(postedFile.InputStream);
 
             } catch (Exception ex)
             {

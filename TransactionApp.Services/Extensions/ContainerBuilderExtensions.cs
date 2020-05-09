@@ -2,6 +2,8 @@
 using System.Reflection;
 using Autofac;
 using TransactionApp.Common.Mappings.Abstractions;
+using TransactionApp.Services.Services.Transactions.Abstractions;
+using TransactionApp.Services.Services.Transactions.Parsers;
 
 namespace TransactionApp.Services.Extensions
 {
@@ -33,6 +35,9 @@ namespace TransactionApp.Services.Extensions
                            .InstancePerLifetimeScope();
                 }
             }
+            builder.RegisterType<CsvImportParser>()
+                .As<ITransactionsDataParser>()
+                .InstancePerLifetimeScope();
 
             return builder;
         }

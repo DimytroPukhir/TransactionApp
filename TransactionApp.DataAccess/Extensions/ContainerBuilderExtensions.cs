@@ -2,6 +2,8 @@
 using System.Reflection;
 using Autofac;
 using TransactionApp.Common.Mappings.Abstractions;
+using TransactionApp.DataAccess.DAL.Context;
+using TransactionApp.DataAccess.DAL.Infrastructure;
 using TransactionApp.DataAccess.DAL.UnitOfWork;
 
 namespace TransactionApp.DataAccess.Extensions
@@ -60,6 +62,7 @@ namespace TransactionApp.DataAccess.Extensions
 
         private static void RegisterOtherDependecies(this ContainerBuilder builder)
         {
+            builder.RegisterType<TransactionsContext>().As<ITransactionsContext>().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWork>()
                 .As<IUnitOfWork>()
                 .InstancePerLifetimeScope();

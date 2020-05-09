@@ -79,6 +79,7 @@ namespace TransactionApp.DataAccess.DAL.Repositories
                 Code = model.Code, Amount = model.Amount, Date = model.Date, Status = model.Status
             };
             _context.Transactions.Add(newTransactionEntity);
+            _context.SaveChangesAsync();
         }
 
         public void SaveChangesAsync()

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using TransactionApp.Common.Extensions;
@@ -16,7 +17,6 @@ namespace TransactionApp.Extensions
             var builder = new ContainerBuilder();
 
             builder.RegisterControllers(mvcAssembly);
-
             // Register web abstractions like HttpContextBase.
             builder.RegisterModule<AutofacWebTypesModule>();
 
@@ -25,6 +25,8 @@ namespace TransactionApp.Extensions
             builder.RegisterDataAccessLayer();
             builder.RegisterCommonServices();
             builder.RegisterMappers();
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
 
         private static void RegisterMappers(this ContainerBuilder builder)

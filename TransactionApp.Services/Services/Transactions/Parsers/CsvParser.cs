@@ -27,7 +27,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
 
                 if (firstLine != null)
                 {
-                    var foundHeaders = firstLine.Split(';').Select(h => h.Trim()).ToList();
+                    var foundHeaders = firstLine.Split(new[] { '"',',' }, StringSplitOptions.None).Select(h => h.Trim()).ToList();
 
                     if (foundHeaders.Count.Equals(5))
                     {
@@ -94,7 +94,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
        
         private static Dictionary<int, string> GetFieldsInRowWithPosition(string line)
         {
-            return line.Split(';')
+            return line.Split(',')
                        .Select(v => v.Trim())
                        .Select((v, i) => new
                                          {

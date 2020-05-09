@@ -65,6 +65,7 @@
         <Compile Include="Services\Transactions\Abstractions\ITransactionsDataParser.cs" />
         <Compile Include="Services\Transactions\Abstractions\ITransactionsParserProvider.cs" />
         <Compile Include="Services\Transactions\Parsers\CsvParser.cs" />
+        <Compile Include="Services\Transactions\Parsers\XmlParser.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\TransactionApp.Common\TransactionApp.Common.csproj">
@@ -74,6 +75,10 @@
       <ProjectReference Include="..\TransactionApp.DataAccess\TransactionApp.DataAccess.csproj">
         <Project>{b86411ef-0f7b-43ff-bda4-581af94d7572}</Project>
         <Name>TransactionApp.DataAccess</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\TransactionApp.DomainModel\TransactionApp.DomainModel.csproj">
+        <Project>{9751d260-643e-4c14-900a-ebf177de9b8b}</Project>
+        <Name>TransactionApp.DomainModel</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>
