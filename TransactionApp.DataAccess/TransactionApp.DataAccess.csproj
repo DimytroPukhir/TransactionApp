@@ -70,12 +70,13 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Class1.cs" />
-        <Compile Include="DAL\Abstractions\ITransactionContext.cs" />
-        <Compile Include="DAL\Abstractions\ITransactionRepository.cs" />
-        <Compile Include="DAL\Context\TransactionContext.cs" />
+        <Compile Include="DAL\Infrastructure\ITransactionsContext.cs" />
+        <Compile Include="DAL\Context\TransactionsContext.cs" />
         <Compile Include="DAL\Entities\TransactionEntity.cs" />
+        <Compile Include="DAL\Repositories\Abstactions\ITransactionRepository.cs" />
         <Compile Include="DAL\Repositories\TransactionRepository.cs" />
+        <Compile Include="DAL\UnitOfWork\IUnitOfWork.cs" />
+        <Compile Include="DAL\UnitOfWork\UnitOfWork.cs" />
         <Compile Include="Extensions\ContainerBuilderExtensions.cs" />
         <Compile Include="Mappers\TransactionMapper.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,9 +94,6 @@
         <Project>{9751d260-643e-4c14-900a-ebf177de9b8b}</Project>
         <Name>TransactionApp.DomainModel</Name>
       </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="DAL" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

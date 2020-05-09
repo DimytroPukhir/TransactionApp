@@ -1,0 +1,45 @@
+﻿@* @model IEnumerable<TransactionApp.Models.TransactionViewModel> *@
+@* *@
+@* @{ *@
+@*     ViewBag.Title = "View"; *@
+@* } *@
+@* *@
+@* <h2>View Employees</h2> *@
+@* *@
+@* *@
+@* <table class="table"> *@
+@*     <tr> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.Id) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.Identificator) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.Payment) *@
+@*         </th> *@
+@*         <th> *@
+@*             @Html.DisplayNameFor(model => model.Status) *@
+@*         </th> *@
+@* *@
+@*     </tr> *@
+@* *@
+@*     @foreach (var item in Model) { *@
+@*         <tr> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(model => item.Id) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Identificator) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Payment) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Status) *@
+@*             </td> *@
+@* *@
+@*         </tr> *@
+@*     } *@
+@* *@
+@* </table> *@

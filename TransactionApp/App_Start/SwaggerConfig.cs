@@ -13,17 +13,17 @@ namespace TransactionApp
         {
             var containingAssembly = typeof(SwaggerConfig).Assembly;
 
-            GlobalConfiguration.Configuration
-                .EnableSwagger(c =>
-                {
-                    c.SingleApiVersion("v1", "TransactionApp");
-                  
-                  
-                })
-                .EnableSwaggerUi(c =>
-                {
-                   
-                });
+            // GlobalConfiguration.Configuration
+            //     .EnableSwagger(c =>
+            //     {
+            //         c.SingleApiVersion("v1", "TransactionApp");
+            //       
+            //       
+            //     })
+            //     .EnableSwaggerUi(c =>
+            //     {
+            //        
+            //     });
 
             /*
             GlobalConfiguration.Configuration 

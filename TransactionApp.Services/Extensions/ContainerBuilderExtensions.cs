@@ -7,12 +7,12 @@ namespace TransactionApp.Services.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterServicesLayer(this ContainerBuilder builder)
+        public static void RegisterServicesLayer(this ContainerBuilder builder)
         {
-            return builder
-                   .RegisterServices()
-                   .RegisterProviders()
-                   .RegisterMappers();
+            builder
+                .RegisterServices()
+                .RegisterProviders()
+                .RegisterMappers();
         }
 
      
@@ -57,7 +57,7 @@ namespace TransactionApp.Services.Extensions
 
             return builder;
         }
-        private static ContainerBuilder RegisterMappers(this ContainerBuilder builder)
+        private static void RegisterMappers(this ContainerBuilder builder)
         {
             // mappers
             var mapperTypes = Assembly.GetAssembly(typeof(ContainerBuilderExtensions))
@@ -75,8 +75,6 @@ namespace TransactionApp.Services.Extensions
                            .SingleInstance();
                 }
             }
-
-            return builder;
         }
     }
 }

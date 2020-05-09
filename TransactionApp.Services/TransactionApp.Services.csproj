@@ -56,18 +56,24 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Abstractions\ITransactionsService.cs" />
         <Compile Include="Extensions\ContainerBuilderExtensions.cs" />
         <Compile Include="Models\Transaction.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Services\TransactionsParserProvider.cs" />
-        <Compile Include="Services\TransactionsService.cs" />
+        <Compile Include="Services\TransactionsesService.cs" />
         <Compile Include="Services\Transactions\Abstractions\ITransactionsDataParser.cs" />
         <Compile Include="Services\Transactions\Abstractions\ITransactionsParserProvider.cs" />
+        <Compile Include="Services\Transactions\Parsers\CsvParser.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\TransactionApp.Common\TransactionApp.Common.csproj">
         <Project>{cd7d8795-05ae-45fb-8cfb-34a44a90ed27}</Project>
         <Name>TransactionApp.Common</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\TransactionApp.DataAccess\TransactionApp.DataAccess.csproj">
+        <Project>{b86411ef-0f7b-43ff-bda4-581af94d7572}</Project>
+        <Name>TransactionApp.DataAccess</Name>
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

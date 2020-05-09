@@ -1,44 +1,53 @@
 ﻿using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Integration.Mvc;
+using TransactionApp.Common.Extensions;
 using TransactionApp.Common.Mappings.Abstractions;
-using TransactionApp.DataAccess.DAL.UnitOfWork;
+using TransactionApp.DataAccess.Extensions;
+using TransactionApp.Services.Extensions;
 
-namespace TransactionApp.DataAccess.Extensions
+namespace TransactionApp.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static void RegisterDataAccessLayer(this ContainerBuilder builder)
+        public static void CreateContainerBuilder(Assembly mvcAssembly)
         {
-            builder.RegisterRepositories()
-                .RegisterMappers()
-                .RegisterOtherDependecies();
+            var builder = new ContainerBuilder();
+
+            builder.RegisterControllers(mvcAssembly);
+
+            // Register web abstractions like HttpContextBase.
+            builder.RegisterModule<AutofacWebTypesModule>();
+
+            builder.RegisterFilterProvider();
+            builder.RegisterServicesLayer();
+            builder.RegisterDataAccessLayer();
+            builder.RegisterCommonServices();
+            builder.RegisterMappers();
         }
 
-        private static ContainerBuilder RegisterRepositories(this ContainerBuilder builder)
+        private static void RegisterMappers(this ContainerBuilder builder)
         {
-            var repositoryTypes = Assembly.GetAssembly(typeof(ContainerBuilderExtensions))
+            var mapperTypes = Assembly.GetAssembly(typeof(ContainerBuilderExtensions))
                 .GetTypes()
                 .Where(t => !t.IsGenericType && !t.IsAbstract && t.BaseType != null)
-                .Where(t => t.Name.EndsWith("Repository"))
+                .Where(t => t.IsClosedTypeOf(typeof(IMappingProfile<,>)))
                 .ToList();
 
-            foreach (var type in repositoryTypes)
+            foreach (var type in mapperTypes)
             {
                 if (type.BaseType != null)
                 {
                     builder.RegisterType(type)
                         .AsImplementedInterfaces()
-                        .InstancePerLifetimeScope();
+                        .SingleInstance();
                 }
             }
-
-            return builder;
         }
 
-        private static ContainerBuilder RegisterMappers(this ContainerBuilder builder)
+        private static ContainerBuilder Register(this ContainerBuilder builder)
         {
-            // mappers
             var mapperTypes = Assembly.GetAssembly(typeof(ContainerBuilderExtensions))
                 .GetTypes()
                 .Where(t => !t.IsGenericType && !t.IsAbstract && t.BaseType != null)
@@ -56,13 +65,6 @@ namespace TransactionApp.DataAccess.Extensions
             }
 
             return builder;
-        }
-
-        private static void RegisterOtherDependecies(this ContainerBuilder builder)
-        {
-            builder.RegisterType<UnitOfWork>()
-                .As<IUnitOfWork>()
-                .InstancePerLifetimeScope();
         }
     }
 }

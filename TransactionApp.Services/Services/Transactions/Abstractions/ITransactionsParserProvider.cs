@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace TransactionApp.Services.Services.Transactions.Abstractions
 {
-    internal interface ITransactionsParserProvider
+    public interface ITransactionsParserProvider
     {
-        Task<ITransactionsParserProvider> GetParserFor(Stream data);
+        Task<ITransactionsDataParser> GetParserFor(Stream data);
     }
 }

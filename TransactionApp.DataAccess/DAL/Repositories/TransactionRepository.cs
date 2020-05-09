@@ -4,27 +4,22 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using TransactionApp.Common.Mappings.Abstractions;
-using TransactionApp.DataAccess.DAL.Abstractions;
 using TransactionApp.DataAccess.DAL.Entities;
+using TransactionApp.DataAccess.DAL.Infrastructure;
+using TransactionApp.DataAccess.DAL.Repositories.Abstactions;
 using TransactionApp.DomainModel.Models;
 
 namespace TransactionApp.DataAccess.DAL.Repositories
 {
-    public class TransactionRepository : ITransactionRepository, IDisposable
+    public class TransactionRepository : ITransactionRepository
     {
-        private readonly ITransactionContext _context;
+        private readonly ITransactionsContext _context;
         private readonly IMapper _mapper;
 
-        public TransactionRepository(ITransactionContext context, IMapper mapper)
+        public TransactionRepository(ITransactionsContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-        }
-
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<Transaction> GetByIdAsync(int id)
@@ -38,24 +33,14 @@ namespace TransactionApp.DataAccess.DAL.Repositories
             return _context.Transactions.AnyAsync(x => x.Id == id);
         }
 
-        public void AddAsync(TransactionCreateModel model)
-        {
-            var newTransactionEntity = new TransactionEntity
-            {
-                Identificator = model.Identificator,
-                Code = model.Code, Amount = model.Amount, Date = model.Date, Status = model.Status
-            };
-            _context.Transactions.Add(newTransactionEntity);
-        }
-
-        public async Task<IReadOnlyList<Transaction>> GetAsync()
+        public async Task<List<Transaction>> GetAllAsync()
         {
             var entities = await _context.Transactions.ToListAsync();
             return _mapper.Map<TransactionEntity, Transaction>(entities);
         }
 
         public async Task<List<Transaction>> GetFiltered(string currency, DateTimeOffset? startDate,
-            DateTimeOffset? endDate, string status)
+            DateTimeOffset? endDate, string status, string identificator)
         {
             var query = _context.Transactions
                 .AsNoTracking()
@@ -75,13 +60,30 @@ namespace TransactionApp.DataAccess.DAL.Repositories
                 query = query.Where(x => string.Equals(x.Status, status, StringComparison.InvariantCultureIgnoreCase));
             }
 
+            if (!string.IsNullOrEmpty(identificator))
+            {
+                query = query.Where(x =>
+                    string.Equals(x.Identificator, identificator, StringComparison.InvariantCultureIgnoreCase));
+            }
+
             var items = await query.ToListAsync();
-                return _mapper.Map<TransactionEntity, Transaction>(items);
+
+            return _mapper.Map<TransactionEntity, Transaction>(items);
         }
 
-        public void SaveAsync()
+        public void AddAsync(TransactionCreateModel model)
         {
-            _context.Transactions.saveChanges()
+            var newTransactionEntity = new TransactionEntity
+            {
+                Identificator = model.Identificator,
+                Code = model.Code, Amount = model.Amount, Date = model.Date, Status = model.Status
+            };
+            _context.Transactions.Add(newTransactionEntity);
+        }
+
+        public void SaveChangesAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

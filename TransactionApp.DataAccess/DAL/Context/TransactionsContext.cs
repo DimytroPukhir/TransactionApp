@@ -1,22 +1,21 @@
 ﻿using System.Data.Entity;
 using System.Threading.Tasks;
-using TransactionApp.DataAccess.DAL.Abstractions;
 using TransactionApp.DataAccess.DAL.Entities;
+using TransactionApp.DataAccess.DAL.Infrastructure;
 
 namespace TransactionApp.DataAccess.DAL.Context
 {
-    public class TransactionContext : DbContext, ITransactionContext
+    public class TransactionsContext : DbContext, ITransactionsContext
     {
-        public TransactionContext()
+        public TransactionsContext()
             : base("ConString")
         {
         }
 
         public virtual IDbSet<TransactionEntity> Transactions { get; set; }
-
-        public override Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            return base.SaveChangesAsync();
+            return await base.SaveChangesAsync();
         }
     }
 }

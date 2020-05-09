@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using TransactionApp.Services.Models;
 
 namespace TransactionApp.Services.Services.Transactions.Abstractions
 {
 
-        public interface IPartImportDataParser: IDisposable
+        public interface ITransactionsDataParser: IDisposable
         {
-           // Task<ImportedPart> ParseAsync(string manufacturerName);
+            Task<Transaction> ParseNextRowAsync();
 
             Task<bool> CanParseDataAsync(Stream data);
 
-            Task SetDataSourceAsync(Stream data);
+            void SetDataSourceAsync(Stream data);
         }
     }
