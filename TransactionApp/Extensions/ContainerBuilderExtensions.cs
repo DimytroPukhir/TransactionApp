@@ -47,26 +47,5 @@ namespace TransactionApp.Extensions
                 }
             }
         }
-
-        private static ContainerBuilder Register(this ContainerBuilder builder)
-        {
-            var mapperTypes = Assembly.GetAssembly(typeof(ContainerBuilderExtensions))
-                .GetTypes()
-                .Where(t => !t.IsGenericType && !t.IsAbstract && t.BaseType != null)
-                .Where(t => t.IsClosedTypeOf(typeof(IMappingProfile<,>)))
-                .ToList();
-
-            foreach (var type in mapperTypes)
-            {
-                if (type.BaseType != null)
-                {
-                    builder.RegisterType(type)
-                        .AsImplementedInterfaces()
-                        .SingleInstance();
-                }
-            }
-
-            return builder;
-        }
     }
 }

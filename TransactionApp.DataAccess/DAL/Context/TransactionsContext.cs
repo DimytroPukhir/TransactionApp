@@ -1,21 +1,30 @@
-﻿using System.Data.Entity;
-using System.Threading.Tasks;
+﻿using System;
+using System.Data.Entity;
 using TransactionApp.DataAccess.DAL.Entities;
 using TransactionApp.DataAccess.DAL.Infrastructure;
 
 namespace TransactionApp.DataAccess.DAL.Context
 {
-    public class TransactionsContext : DbContext, ITransactionsContext
+    public class TransactionsContext :DbContext, ITransactionsContext
     {
         public TransactionsContext()
-            : base("ConString")
+            : base("ConnectionString")
         {
         }
 
         public virtual IDbSet<TransactionEntity> Transactions { get; set; }
-        public async Task<int> SaveChangesAsync()
+
+        public void SaveChanges()
         {
-            return await base.SaveChangesAsync();
+            try
+            {
+                base.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
     }
 }

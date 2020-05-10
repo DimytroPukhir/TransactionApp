@@ -8,8 +8,8 @@ namespace TransactionApp.DataAccess.Mappers
     {
         public Transaction Map(TransactionEntity source)
         {
-            return new Transaction(source.Id,
-                source.Identificator,
+            return new Transaction(
+                source.PublicId,
                 source.Amount,
                 source.Code,
                 source.Date,

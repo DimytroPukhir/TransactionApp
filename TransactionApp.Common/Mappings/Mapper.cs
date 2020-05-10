@@ -5,7 +5,7 @@ using TransactionApp.Common.Mappings.Abstractions;
 
 namespace TransactionApp.Common.Mappings
 {
-    public class Mapper: IMapper
+    public class Mapper : IMapper
     {
         private readonly IComponentContext _context;
 
@@ -15,7 +15,7 @@ namespace TransactionApp.Common.Mappings
         }
 
         public TDestination Map<TSource, TDestination>(TSource source)
-            where TDestination: class
+            where TDestination : class
         {
             if (source == null)
             {
@@ -29,7 +29,7 @@ namespace TransactionApp.Common.Mappings
         }
 
         public List<TDestination> Map<TSource, TDestination>(IEnumerable<TSource> sourceItems)
-            where TDestination: class
+            where TDestination : class
         {
             if (sourceItems == null)
             {

@@ -7,13 +7,15 @@ using TransactionApp.Services.Services.Transactions.Abstractions;
 
 namespace TransactionApp.Services.Services
 {
-    public class TransactionsParserProvider:ITransactionsParserProvider
-    { private readonly IComponentContext _componentContext;
+    public class TransactionsParserProvider : ITransactionsParserProvider
+    {
+        private readonly IComponentContext _componentContext;
 
         public TransactionsParserProvider(IComponentContext componentContext)
         {
             _componentContext = componentContext;
         }
+
         public async Task<ITransactionsDataParser> GetParserFor(Stream data)
         {
             if (!data.CanSeek)
@@ -29,7 +31,7 @@ namespace TransactionApp.Services.Services
 
                 if (await parser.CanParseDataAsync(data))
                 {
-                    data.Seek(0, SeekOrigin.Begin); 
+                    data.Seek(0, SeekOrigin.Begin);
                     parser.SetDataSourceAsync(data);
 
                     return parser;

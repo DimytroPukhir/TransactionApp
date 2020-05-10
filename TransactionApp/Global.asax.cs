@@ -4,10 +4,12 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using TransactionApp.Extensions;
+using TransactionApp.Filters;
 using ContainerBuilder = Autofac.ContainerBuilder;
 
 namespace TransactionApp
@@ -21,6 +23,7 @@ namespace TransactionApp
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ContainerBuilderExtensions.CreateContainerBuilder(Assembly.GetExecutingAssembly());
+            GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }
 }

@@ -1,0 +1,49 @@
+﻿@model TransactionApp.Models.TransactionFilterModel
+<h2>Transaction filters</h2>
+<div class="container">
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <div class="row">
+                @using (Html.BeginForm("GetFilteredAsync", "Transactions", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.Label("File Upload", new {@class = "col-sm-7"})
+                        <div class="col-sm-7">
+                            @Html.Label("Currency", new {@class = "col-sm-3"})
+                            @Html.TextBoxFor(s => s.CurrencyCode)
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.Label("Status", new {@class = "col-sm-3"})
+                            @Html.TextBoxFor(s => s.Status)
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.Label("StartDate", new {@class = "col-sm-3"})
+                            @Html.TextBoxFor(s => s.StartDate)
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.Label("EndDate", new {@class = "col-sm-3"})
+                            @Html.TextBoxFor(s => s.EndDate)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-offset-3 col-md-10">
+                            <br/>
+                            <input type="submit" title="Upload" value="Upload" class="btn btn-default"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <div class="col-md-offset-3 col-md-10">
+                            <br/>
+                            <span style="color:red;">
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        @Html.ActionLink("GetAll", "GetAllAsync", "Transactions", new {@class = "btn btn-default"})
+    </div>
+</div>

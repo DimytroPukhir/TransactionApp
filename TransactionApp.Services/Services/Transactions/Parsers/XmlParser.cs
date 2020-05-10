@@ -1,20 +1,20 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using TransactionApp.Common.Mappings.Abstractions;
-using TransactionApp.Services.Models;
+using TransactionApp.DomainModel.Models;
 using TransactionApp.Services.Services.Transactions.Abstractions;
+using TransactionApp.Services.Services.Transactions.Parsers.Models;
 
 namespace TransactionApp.Services.Services.Transactions.Parsers
 {
-    public class XmlParser:ITransactionsDataParser
+    public class XmlParser : ITransactionsDataParser
     {
-        private readonly IMapper _mapper;
         private StreamReader _dataSourceReader;
 
         public XmlParser(IMapper mapper, StreamReader dataSourceReader)
         {
-            _mapper = mapper;
             _dataSourceReader = dataSourceReader;
         }
 
@@ -23,7 +23,12 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
             _dataSourceReader?.Dispose();
         }
 
-        public Task<Transaction> ParseNextRowAsync()
+        public Task<TransactionCreateModel> ParseNextRowAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ParseResults> ParseAllFileAsync(Stream data)
         {
             throw new System.NotImplementedException();
         }
@@ -46,7 +51,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
                 // ignored
             }
 
-            return  canParse;
+            return canParse;
         }
 
         public void SetDataSourceAsync(Stream data)

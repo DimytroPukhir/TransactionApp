@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TransactionApp.Services.Models;
+using TransactionApp.DomainModel.Models;
+using TransactionApp.Services.Services.Transactions.Parsers.Models;
 
 namespace TransactionApp.Services.Services.Transactions.Abstractions
 {
+    public interface ITransactionsDataParser : IDisposable
+    {
+        Task<ParseResults> ParseAllFileAsync(Stream data);
 
-        public interface ITransactionsDataParser: IDisposable
-        {
-            Task<Transaction> ParseNextRowAsync();
+        Task<bool> CanParseDataAsync(Stream data);
 
-            Task<bool> CanParseDataAsync(Stream data);
-
-            void SetDataSourceAsync(Stream data);
-        }
+        void SetDataSourceAsync(Stream data);
     }
+}
