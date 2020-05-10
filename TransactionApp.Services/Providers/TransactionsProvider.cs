@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using TransactionApp.DataAccess.DAL.UnitOfWork;
 using TransactionApp.DomainModel.Models;
@@ -37,14 +38,15 @@ namespace TransactionApp.Services.Providers
             endDateFilter = new DateTimeOffset();
             if (!string.IsNullOrEmpty(startDate) && !string.IsNullOrEmpty(endDate))
             {
-                var hasStartDate = DateTimeOffset.TryParse(startDate, out _);
-                var hasEndDate = DateTimeOffset.TryParse(endDate, out _);
+                 var hasStartDate = DateTimeOffset.TryParseExact(startDate, "dd/MM/yyyy hh:mm:ss",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out startDateFilter);
+                 var hasEndDate = DateTimeOffset.TryParseExact(endDate, "dd/MM/yyyy hh:mm:ss",
+                     CultureInfo.InvariantCulture,
+                     DateTimeStyles.None, out endDateFilter);
                 if (hasEndDate && hasStartDate)
                 {
                     isValidDateRange = true;
-
-                    DateTimeOffset.TryParse(startDate, out startDateFilter);
-                    DateTimeOffset.TryParse(startDate, out endDateFilter);
                 }
             }
 

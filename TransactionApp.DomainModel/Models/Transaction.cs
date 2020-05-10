@@ -1,23 +1,20 @@
 ﻿using System;
-using System.CodeDom;
 
 namespace TransactionApp.DomainModel.Models
 {
     public class Transaction
     {
-        public Transaction(int id, string identificator, decimal amount, string code, DateTimeOffset date,
+        public Transaction(string publicId, decimal amount, string code, DateTimeOffset date,
             string status)
         {
-            Id = id;
-            Identificator = identificator;
+            PublicId = publicId;
             Amount = amount;
             Code = code;
             Date = date;
             Status = status;
         }
 
-        public int Id { get; }
-        public string Identificator { get; }
+        public string PublicId { get; }
         public decimal Amount { get; }
         public string Code { get; }
         public DateTimeOffset Date { get; }

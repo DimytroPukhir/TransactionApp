@@ -5,6 +5,6 @@ namespace TransactionApp.Services.Abstractions
 {
     public interface ITransactionsService
     {
-        Task ProcessTransactionsAsync(Stream data);
+        Task AddTransactionsAsync(Stream data);
     }
 }

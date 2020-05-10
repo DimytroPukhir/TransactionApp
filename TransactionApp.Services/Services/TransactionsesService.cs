@@ -1,8 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using TransactionApp.DataAccess.DAL.Repositories.Abstactions;
+using TransactionApp.Common.Exceptions;
 using TransactionApp.DataAccess.DAL.UnitOfWork;
 using TransactionApp.DomainModel.Models;
 using TransactionApp.Services.Abstractions;
@@ -13,37 +12,41 @@ namespace TransactionApp.Services.Services
     public class TransactionsService : ITransactionsService
     {
         private readonly ITransactionsParserProvider _partImportParserProvider;
-        private readonly ITransactionRepository _transactionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TransactionsService(ITransactionsParserProvider partImportParserProvider, IUnitOfWork unitOfWork,
-            ITransactionRepository transactionRepository)
+        public TransactionsService(ITransactionsParserProvider partImportParserProvider, IUnitOfWork unitOfWork)
         {
             _partImportParserProvider = partImportParserProvider;
             _unitOfWork = unitOfWork;
-            _transactionRepository = transactionRepository;
         }
 
-        public async Task ProcessTransactionsAsync(Stream data)
+        public async Task AddTransactionsAsync(Stream data)
         {
+
             using (var parser = await _partImportParserProvider.GetParserFor(data))
             {
                 if (parser == null)
                 {
-                    throw new WarningException();
-                    //Throw custom exception
+                    throw new FormatException("Unknown Format");
                 }
-            
-                var importedItem = await parser.ParseNextRowAsync();
-            
-                while (importedItem != null)
+
+                var importedItems = await parser.ParseAllFileAsync(data);
+                if (importedItems.ParseErrors.Count > 0)
                 {
-                    importedItem = await parser.ParseNextRowAsync();
+                  //  throw new BadRequestResponse(importedItems.ParseErrors);
                 }
-            
-                // TODO: implement saving by batches inside loop
-               await _unitOfWork.SaveChangesAsync();
+                else
+                {
+                    foreach (var item in importedItems.Transactions)
+                    {
+                        _unitOfWork.TransactionRepository.AddAsync(item);
+                    }
+                    
+                }
+                
             }
+            _unitOfWork.SaveChanges();
+
         }
     }
 }

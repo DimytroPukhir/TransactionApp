@@ -22,32 +22,23 @@ namespace TransactionApp.DataAccess.DAL.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Transaction> GetByIdAsync(int id)
-        {
-            var entity = await _context.Transactions.AsNoTracking().AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
-            return _mapper.Map<TransactionEntity, Transaction>(entity);
-        }
-
-        public Task<bool> ExistsAsync(int id)
-        {
-            return _context.Transactions.AnyAsync(x => x.Id == id);
-        }
-
         public async Task<List<Transaction>> GetAllAsync()
         {
-            var entities = await _context.Transactions.ToListAsync();
+            var entities = _context.Transactions.ToList();
+
+
             return _mapper.Map<TransactionEntity, Transaction>(entities);
         }
 
-        public async Task<List<Transaction>> GetFiltered(string currency, DateTimeOffset? startDate,
-            DateTimeOffset? endDate, string status, string identificator)
+        public async Task<List<Transaction>> GetFiltered(string currencyCode, DateTimeOffset? startDate,
+            DateTimeOffset? endDate, string status)
         {
-            var query = _context.Transactions
-                .AsNoTracking()
+            var query = _context.Transactions.AsNoTracking()
                 .AsQueryable();
-            if (!string.IsNullOrEmpty(currency))
+            if (!string.IsNullOrEmpty(currencyCode))
             {
-                query = query.Where(x => string.Equals(x.Code, currency, StringComparison.InvariantCultureIgnoreCase));
+                query = query.Where(x =>
+                    x.Code.Equals(currencyCode, StringComparison.InvariantCultureIgnoreCase));
             }
 
             if (startDate != null && endDate != null)
@@ -57,17 +48,11 @@ namespace TransactionApp.DataAccess.DAL.Repositories
 
             if (!string.IsNullOrEmpty(status))
             {
-                query = query.Where(x => string.Equals(x.Status, status, StringComparison.InvariantCultureIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(identificator))
-            {
                 query = query.Where(x =>
-                    string.Equals(x.Identificator, identificator, StringComparison.InvariantCultureIgnoreCase));
+                    x.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase));
             }
 
-            var items = await query.ToListAsync();
-
+            var items = query.ToList();
             return _mapper.Map<TransactionEntity, Transaction>(items);
         }
 
@@ -75,16 +60,11 @@ namespace TransactionApp.DataAccess.DAL.Repositories
         {
             var newTransactionEntity = new TransactionEntity
             {
-                Identificator = model.Identificator,
-                Code = model.Code, Amount = model.Amount, Date = model.Date, Status = model.Status
+                Id = Guid.NewGuid(),
+                PublicId = model.publicId,
+                Code = model.Code, Amount = model.Amount.Value, Date = model.Date, Status = model.Status
             };
             _context.Transactions.Add(newTransactionEntity);
-            _context.SaveChangesAsync();
-        }
-
-        public void SaveChangesAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }
