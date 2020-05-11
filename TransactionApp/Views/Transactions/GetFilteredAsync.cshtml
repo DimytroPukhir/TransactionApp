@@ -4,36 +4,41 @@
     ViewBag.Title = "View";
 }
 
-<h2>View Filtered Transaction</h2>
+<h2>Filtered Transactions</h2>
 
-
-<table class="table">
-    <tr>
-      
-        <th>
-            @Html.DisplayNameFor(model => model.PublicId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Payment)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-
-    </tr>
-
-    @foreach (var item in Model) {
+@if (Model != null)
+{
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublicId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Payment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PublicId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Payment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
 
         </tr>
-    }
-</table>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublicId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Payment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+}
+@Html.ActionLink("Back", "Index", "Transactions", new {@class = "btn btn-default"})

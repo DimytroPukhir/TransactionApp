@@ -2,7 +2,8 @@ namespace TransactionApp.DataAccess.Migrations
 {
     using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<TransactionApp.DataAccess.DAL.Context.TransactionsContext>
+    internal sealed class
+        Configuration : DbMigrationsConfiguration<TransactionApp.DataAccess.DAL.Context.TransactionsContext>
     {
         public Configuration()
         {

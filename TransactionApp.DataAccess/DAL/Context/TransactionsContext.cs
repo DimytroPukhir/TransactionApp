@@ -1,11 +1,10 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
+using TransactionApp.DataAccess.DAL.Context.Abstractions;
 using TransactionApp.DataAccess.DAL.Entities;
-using TransactionApp.DataAccess.DAL.Infrastructure;
 
 namespace TransactionApp.DataAccess.DAL.Context
 {
-    public class TransactionsContext :DbContext, ITransactionsContext
+    public class TransactionsContext : DbContext, ITransactionsContext
     {
         public TransactionsContext()
             : base("ConnectionString")
@@ -14,17 +13,14 @@ namespace TransactionApp.DataAccess.DAL.Context
 
         public virtual IDbSet<TransactionEntity> Transactions { get; set; }
 
-        public void SaveChanges()
+        public DbContextTransaction BeginTransaction()
         {
-            try
-            {
-                base.SaveChanges();
-            }
-            catch (Exception ex)
-            {
+            return Database.BeginTransaction();
+        }
 
-            }
-
+        public new void SaveChanges()
+        {
+            base.SaveChanges();
         }
     }
 }

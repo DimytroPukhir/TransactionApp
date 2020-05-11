@@ -2,11 +2,7 @@
 {
     public class TransactionViewModel
     {
-        public TransactionViewModel()
-        {
-        }
-
-        public TransactionViewModel( string publicId, string payment, string status)
+        public TransactionViewModel(string publicId, string payment, string status)
         {
             PublicId = publicId;
             Payment = payment;

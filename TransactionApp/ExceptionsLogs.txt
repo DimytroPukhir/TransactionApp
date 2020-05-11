@@ -1,0 +1,13 @@
+2020-05-11 11:59:09.4216|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 11:59:33.1403|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 12:17:41.7829|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 12:22:32.8865|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 12:25:36.4404|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 12:25:50.3985|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 12:46:54.7456|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 13:43:20.4410|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 13:44:26.1806|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 13:45:10.8973|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 13:47:21.0833|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 16:41:46.4977|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult
+2020-05-11 16:42:27.8313|ERROR|TransactionApp.Filters.HandleExceptionsAttribute|System.Web.Mvc.ContentResult

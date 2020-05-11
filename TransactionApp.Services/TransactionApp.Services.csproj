@@ -67,12 +67,10 @@
     <Compile Include="Abstractions\ITransactionsProvider.cs" />
     <Compile Include="Abstractions\ITransactionsService.cs" />
     <Compile Include="Extensions\ContainerBuilderExtensions.cs" />
-    <Compile Include="Helpers\ParseValidator.cs" />
-    <Compile Include="Helpers\StatusHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\TransactionsProvider.cs" />
-    <Compile Include="Services\TransactionsParserProvider.cs" />
-    <Compile Include="Services\TransactionsesService.cs" />
+    <Compile Include="Services\Transactions\Parsers\Provider\TransactionsParserProvider.cs" />
+    <Compile Include="Services\TransactionsService.cs" />
     <Compile Include="Services\Transactions\Abstractions\ITransactionsDataParser.cs" />
     <Compile Include="Services\Transactions\Abstractions\ITransactionsParserProvider.cs" />
     <Compile Include="Services\Transactions\Parsers\CsvTransactionParser.cs" />
@@ -80,7 +78,6 @@
     <Compile Include="Services\Transactions\Parsers\Models\XmlTransactionsDto.cs" />
     <Compile Include="Services\Transactions\Parsers\XmlTransactionParser.cs" />
     <Compile Include="Validators\ParseResultsValidator.cs" />
-    <Compile Include="Validators\TransactionXmlModelValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TransactionApp.Common\TransactionApp.Common.csproj">
@@ -95,11 +92,16 @@
       <Project>{9751d260-643e-4c14-900a-ebf177de9b8b}</Project>
       <Name>TransactionApp.DomainModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TransactionApp.Services.Infrastructure\TransactionApp.Services.Infrastructure.csproj">
+      <Project>{9a7b71fa-ea7e-461d-8d66-a722ad876ae2}</Project>
+      <Name>TransactionApp.Services.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,8 +3,9 @@ using System.Reflection;
 using Autofac;
 using TransactionApp.Common.Mappings.Abstractions;
 using TransactionApp.DataAccess.DAL.Context;
-using TransactionApp.DataAccess.DAL.Infrastructure;
+using TransactionApp.DataAccess.DAL.Context.Abstractions;
 using TransactionApp.DataAccess.DAL.UnitOfWork;
+using TransactionApp.Services.Infrastructure;
 
 namespace TransactionApp.DataAccess.Extensions
 {

@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TransactionApp.Common.Helpers;
 using TransactionApp.DomainModel.Models;
-using TransactionApp.Services.Helpers;
 using TransactionApp.Services.Services.Transactions.Abstractions;
 using TransactionApp.Services.Services.Transactions.Parsers.Models;
 
@@ -14,6 +14,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
 {
     internal class CsvTransactionParser : ITransactionsDataParser
     {
+        private static string DatePattern => "dd/MM/yyyy hh:mm:ss";
         private const string CommaInNumberPattern = @"(?<=\d),(?=\d)";
         private StreamReader _dataSourceReader;
 
@@ -21,16 +22,16 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
         {
             var reader = new StreamReader(stream);
             var canParse = false;
+            const int minItemCount = 3;
             try
             {
                 var firstLine = await reader.ReadLineAsync();
 
                 if (firstLine != null)
                 {
-                    
-                    firstLine = Regex.Replace(firstLine,CommaInNumberPattern , "");
+                    firstLine = Regex.Replace(firstLine, CommaInNumberPattern, "");
                     var items = firstLine.Split(',').Select(h => h.Trim()).ToList();
-                    if (items.Count > 3)
+                    if (items.Count > minItemCount)
                     {
                         canParse = true;
                     }
@@ -55,7 +56,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
             _dataSourceReader = new StreamReader(stream);
         }
 
-        public async Task<ParseResults> ParseAllFileAsync(Stream data)
+        public async Task<ParseResults> ParseAllFileAsync()
         {
             var importedItems = new List<TransactionCreateModel>();
             var item = await ParseNextRowAsync();
@@ -64,8 +65,8 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
                 importedItems.Add(item);
                 item = await ParseNextRowAsync();
             }
-            
-           return new ParseResults(importedItems, null);;
+
+            return new ParseResults(importedItems);
         }
 
         public void Dispose()
@@ -84,7 +85,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
             {
                 return null;
             }
-           
+
             string row;
             var tryCount = 0;
             do
@@ -99,7 +100,7 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
                 row = Regex.Replace(row, CommaInNumberPattern, "");
             } while (string.IsNullOrWhiteSpace(row));
 
-            var fields = GetFieldsInRowWithPosition(row); 
+            var fields = GetFieldsInRowWithPosition(row);
             return GenerateTransactionModel(fields);
         }
 
@@ -107,14 +108,16 @@ namespace TransactionApp.Services.Services.Transactions.Parsers
         {
             var transaction = new TransactionCreateModel();
             transaction.PublicId = fields[0];
-            var isDecimal =decimal.TryParse(fields[1], out var amount);
-            transaction.Amount = isDecimal?amount:(decimal?)null;
+            var isDecimal = decimal.TryParse(fields[1], out var amount);
+            transaction.Amount = isDecimal ? amount : (decimal?) null;
             transaction.Code = fields[2];
-            var isCorrectDate =  DateTimeOffset.TryParseExact(fields[3], "dd/MM/yyyy hh:mm:ss",CultureInfo.InvariantCulture,DateTimeStyles.None, out var date);
-            transaction.Date = isCorrectDate?date:(DateTimeOffset?)null;
+            var isCorrectDate = DateTimeOffset.TryParseExact(fields[3],DatePattern,
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
+            transaction.Date = isCorrectDate ? date : (DateTimeOffset?) null;
             transaction.Status = StatusHelper.GetUnifiedStatus(fields[4]);
             return transaction;
         }
+
         private static Dictionary<int, string> GetFieldsInRowWithPosition(string line)
         {
             //use substring for deleting quotes or reverse quotes

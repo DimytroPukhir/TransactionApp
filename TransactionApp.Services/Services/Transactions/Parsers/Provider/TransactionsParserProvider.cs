@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using TransactionApp.Services.Services.Transactions.Abstractions;
 
-namespace TransactionApp.Services.Services
+namespace TransactionApp.Services.Services.Transactions.Parsers.Provider
 {
     public class TransactionsParserProvider : ITransactionsParserProvider
     {

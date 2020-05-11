@@ -4,12 +4,10 @@
     ViewBag.Title = "View";
 }
 
-<h2>View All Transaction</h2>
-
-
+<h2>All Transactions</h2>
 <table class="table">
     <tr>
-      
+
         <th>
             @Html.DisplayNameFor(model => model.PublicId)
         </th>
@@ -22,7 +20,8 @@
 
     </tr>
 
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.PublicId)
@@ -36,4 +35,6 @@
 
         </tr>
     }
+
 </table>
+@Html.ActionLink("Back", "Index", "Transactions", new {@class = "btn btn-default"})

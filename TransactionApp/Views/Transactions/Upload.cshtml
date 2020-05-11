@@ -1,35 +1,4 @@
 ﻿@model IEnumerable<TransactionApp.Models.TransactionViewModel>
 
-<h2>View AllTransactions</h2>
-
-
-<table class="table">
-    <tr>
-      
-        <th>
-            @Html.DisplayNameFor(model => model.PublicId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Payment)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-
-    </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublicId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Payment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-
-        </tr>
-    }
-</table>
+<h2>File wasn't selected</h2>
+@Html.ActionLink("Back", "Index", "Transactions", new {@class = "btn btn-default"})

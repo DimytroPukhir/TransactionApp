@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
-using TransactionApp.DataAccess.DAL.Context;
-using TransactionApp.DataAccess.DAL.Infrastructure;
-using TransactionApp.DataAccess.DAL.Repositories;
-using TransactionApp.DataAccess.DAL.Repositories.Abstactions;
+using TransactionApp.DataAccess.DAL.Context.Abstractions;
+using TransactionApp.Services.Infrastructure;
+using TransactionApp.Services.Infrastructure.Repositories;
 
 namespace TransactionApp.DataAccess.DAL.UnitOfWork
 {
@@ -20,13 +18,7 @@ namespace TransactionApp.DataAccess.DAL.UnitOfWork
 
         public void SaveChanges()
         {
-            try
-            {
                 Context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-            }
         }
     }
 }

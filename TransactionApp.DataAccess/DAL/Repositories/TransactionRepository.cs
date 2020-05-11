@@ -4,10 +4,10 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using TransactionApp.Common.Mappings.Abstractions;
+using TransactionApp.DataAccess.DAL.Context.Abstractions;
 using TransactionApp.DataAccess.DAL.Entities;
-using TransactionApp.DataAccess.DAL.Infrastructure;
-using TransactionApp.DataAccess.DAL.Repositories.Abstactions;
 using TransactionApp.DomainModel.Models;
+using TransactionApp.Services.Infrastructure.Repositories;
 
 namespace TransactionApp.DataAccess.DAL.Repositories
 {
@@ -24,7 +24,7 @@ namespace TransactionApp.DataAccess.DAL.Repositories
 
         public async Task<List<Transaction>> GetAllAsync()
         {
-            var entities = _context.Transactions.ToList();
+            var entities = await Items.ToListAsync();
 
 
             return _mapper.Map<TransactionEntity, Transaction>(entities);
@@ -33,8 +33,7 @@ namespace TransactionApp.DataAccess.DAL.Repositories
         public async Task<List<Transaction>> GetFiltered(string currencyCode, DateTimeOffset? startDate,
             DateTimeOffset? endDate, string status)
         {
-            var query = _context.Transactions.AsNoTracking()
-                .AsQueryable();
+            var query = Items;
             if (!string.IsNullOrEmpty(currencyCode))
             {
                 query = query.Where(x =>
@@ -52,7 +51,7 @@ namespace TransactionApp.DataAccess.DAL.Repositories
                     x.Status.Equals(status, StringComparison.InvariantCultureIgnoreCase));
             }
 
-            var items = query.ToList();
+            var items = await query.ToListAsync();
             return _mapper.Map<TransactionEntity, Transaction>(items);
         }
 
@@ -64,7 +63,21 @@ namespace TransactionApp.DataAccess.DAL.Repositories
                 PublicId = model.PublicId,
                 Code = model.Code, Amount = model.Amount.Value, Date = model.Date.Value, Status = model.Status
             };
-            _context.Transactions.Add(newTransactionEntity);
+            using (var transaction = _context.BeginTransaction())
+            {
+                try
+                {
+                    _context.Transactions.Add(newTransactionEntity);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
+
+        private IQueryable<TransactionEntity> Items =>
+            _context.Transactions.AsNoTracking()
+                .AsQueryable();
     }
 }

@@ -39,7 +39,7 @@ namespace TransactionApp.Services.Extensions
             builder.RegisterType<CsvTransactionParser>()
                 .As<ITransactionsDataParser>()
                 .InstancePerLifetimeScope();
-            
+
             builder.RegisterType<XmlTransactionParser>()
                 .As<ITransactionsDataParser>()
                 .InstancePerLifetimeScope();

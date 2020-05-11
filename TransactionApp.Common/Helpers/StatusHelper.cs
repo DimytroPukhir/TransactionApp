@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TransactionApp.Services.Helpers
+namespace TransactionApp.Common.Helpers
 {
     public static class StatusHelper
     {
-       public static List<string> Statuses =new List<string>{"F","D","R","A"};
+        public static List<string> Statuses = new List<string> {"F", "D", "R", "A"};
+
         public static string GetUnifiedStatus(string transactionStatus)
-        { 
+        {
             string status = null;
             switch (transactionStatus.ToLower())
             {
