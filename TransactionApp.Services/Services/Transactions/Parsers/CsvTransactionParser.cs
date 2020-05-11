@@ -1,0 +1,131 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using TransactionApp.DomainModel.Models;
+using TransactionApp.Services.Helpers;
+using TransactionApp.Services.Services.Transactions.Abstractions;
+using TransactionApp.Services.Services.Transactions.Parsers.Models;
+
+namespace TransactionApp.Services.Services.Transactions.Parsers
+{
+    internal class CsvTransactionParser : ITransactionsDataParser
+    {
+        private const string CommaInNumberPattern = @"(?<=\d),(?=\d)";
+        private StreamReader _dataSourceReader;
+
+        public async Task<bool> CanParseDataAsync(Stream stream)
+        {
+            var reader = new StreamReader(stream);
+            var canParse = false;
+            try
+            {
+                var firstLine = await reader.ReadLineAsync();
+
+                if (firstLine != null)
+                {
+                    
+                    firstLine = Regex.Replace(firstLine,CommaInNumberPattern , "");
+                    var items = firstLine.Split(',').Select(h => h.Trim()).ToList();
+                    if (items.Count > 3)
+                    {
+                        canParse = true;
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return canParse;
+        }
+
+        public void SetDataSourceAsync(Stream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentException();
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+            _dataSourceReader = new StreamReader(stream);
+        }
+
+        public async Task<ParseResults> ParseAllFileAsync(Stream data)
+        {
+            var importedItems = new List<TransactionCreateModel>();
+            var item = await ParseNextRowAsync();
+            while (item != null)
+            {
+                importedItems.Add(item);
+                item = await ParseNextRowAsync();
+            }
+            
+           return new ParseResults(importedItems, null);;
+        }
+
+        public void Dispose()
+        {
+            _dataSourceReader?.Dispose();
+        }
+
+        private async Task<TransactionCreateModel> ParseNextRowAsync()
+        {
+            if (_dataSourceReader == null)
+            {
+                throw new ArgumentException();
+            }
+
+            if (_dataSourceReader.EndOfStream)
+            {
+                return null;
+            }
+           
+            string row;
+            var tryCount = 0;
+            do
+            {
+                if (tryCount > 3 || _dataSourceReader.EndOfStream)
+                {
+                    return null;
+                }
+
+                tryCount++;
+                row = await _dataSourceReader.ReadLineAsync();
+                row = Regex.Replace(row, CommaInNumberPattern, "");
+            } while (string.IsNullOrWhiteSpace(row));
+
+            var fields = GetFieldsInRowWithPosition(row); 
+            return GenerateTransactionModel(fields);
+        }
+
+        private static TransactionCreateModel GenerateTransactionModel(IReadOnlyDictionary<int, string> fields)
+        {
+            var transaction = new TransactionCreateModel();
+            transaction.PublicId = fields[0];
+            var isDecimal =decimal.TryParse(fields[1], out var amount);
+            transaction.Amount = isDecimal?amount:(decimal?)null;
+            transaction.Code = fields[2];
+            var isCorrectDate =  DateTimeOffset.TryParseExact(fields[3], "dd/MM/yyyy hh:mm:ss",CultureInfo.InvariantCulture,DateTimeStyles.None, out var date);
+            transaction.Date = isCorrectDate?date:(DateTimeOffset?)null;
+            transaction.Status = StatusHelper.GetUnifiedStatus(fields[4]);
+            return transaction;
+        }
+        private static Dictionary<int, string> GetFieldsInRowWithPosition(string line)
+        {
+            //use substring for deleting quotes or reverse quotes
+            return line.Split(',')
+                .Select(v => v.Trim())
+                .Select((v, i) => new
+                {
+                    Key = i,
+                    Value = v
+                })
+                .ToDictionary(o => o.Key, o => o.Value.Substring(1, o.Value.Length - 2));
+        }
+    }
+}

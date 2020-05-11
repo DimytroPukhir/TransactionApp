@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using FluentValidation.Results;
+using TransactionApp.Common.Exceptions;
 using TransactionApp.Common.Mappings.Abstractions;
 using TransactionApp.DomainModel.Models;
 using TransactionApp.Models;
@@ -17,6 +19,7 @@ namespace TransactionApp.Controllers
         private readonly ITransactionsProvider _transactionsProvider;
         private readonly IMapper _mapper;
         private readonly List<string> _extensions = new List<string> {".csv", ".xml"};
+        private readonly int _appropriateFileSize = 1024;
 
         public TransactionsController(ITransactionsService transactionsService,
             ITransactionsProvider transactionsProvider, IMapper mapper)
@@ -31,7 +34,7 @@ namespace TransactionApp.Controllers
             return View();
         }
 
-        [HandleError]
+        
         [HttpPost]
         public async Task<ActionResult> Upload(HttpPostedFileBase postedFile)
         {
@@ -39,9 +42,14 @@ namespace TransactionApp.Controllers
             try
             {
                 var fileExtension = Path.GetExtension(postedFile.FileName);
-                if (!_extensions.Contains(fileExtension) && postedFile.ContentLength > 1024)
+                if (!_extensions.Contains(fileExtension))
                 {
-                    ViewBag.Message = "“Unknown format";
+                    var errors = new List<string> {"UnknownFormat"};
+                    if (postedFile.ContentLength > _appropriateFileSize)
+                    {
+                        errors.Add("File size more than 1MB");
+                    }
+                    throw new InvalidFileException(errors);
                 }
             }
             catch (Exception ex)

@@ -56,8 +56,8 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Constants\ParseErrorsMessagesConstants.cs" />
-        <Compile Include="Exceptions\BadRequestResponse.cs" />
+        <Compile Include="Constants\ValidationMessages.cs" />
+        <Compile Include="Exceptions\InvalidFileException.cs" />
         <Compile Include="Extensions\CommonContainerBuilderExtensions.cs" />
         <Compile Include="Mappings\Abstractions\IMapper.cs" />
         <Compile Include="Mappings\Abstractions\IMappingProfile.cs" />

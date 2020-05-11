@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using FluentValidation;
 using TransactionApp.Common.Exceptions;
 using TransactionApp.DataAccess.DAL.UnitOfWork;
 using TransactionApp.DomainModel.Models;
 using TransactionApp.Services.Abstractions;
 using TransactionApp.Services.Services.Transactions.Abstractions;
+using TransactionApp.Services.Validators;
 
 namespace TransactionApp.Services.Services
 {
@@ -13,6 +15,7 @@ namespace TransactionApp.Services.Services
     {
         private readonly ITransactionsParserProvider _partImportParserProvider;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ParseResultsValidator _validator = new ParseResultsValidator();
 
         public TransactionsService(ITransactionsParserProvider partImportParserProvider, IUnitOfWork unitOfWork)
         {
@@ -22,7 +25,6 @@ namespace TransactionApp.Services.Services
 
         public async Task AddTransactionsAsync(Stream data)
         {
-
             using (var parser = await _partImportParserProvider.GetParserFor(data))
             {
                 if (parser == null)
@@ -31,22 +33,15 @@ namespace TransactionApp.Services.Services
                 }
 
                 var importedItems = await parser.ParseAllFileAsync(data);
-                if (importedItems.ParseErrors.Count > 0)
-                {
-                  //  throw new BadRequestResponse(importedItems.ParseErrors);
-                }
-                else
-                {
-                    foreach (var item in importedItems.Transactions)
-                    {
-                        _unitOfWork.TransactionRepository.AddAsync(item);
-                    }
-                    
-                }
                 
+               await _validator.ValidateAndThrowAsync(importedItems);
+                foreach (var item in importedItems.Transactions)
+                {
+                    _unitOfWork.TransactionRepository.AddAsync(item);
+                }
+                _unitOfWork.SaveChanges();
             }
-            _unitOfWork.SaveChanges();
-
+            
         }
     }
 }

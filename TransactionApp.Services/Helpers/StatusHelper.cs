@@ -1,9 +1,14 @@
-﻿namespace TransactionApp.Services.Helpers
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace TransactionApp.Services.Helpers
 {
     public static class StatusHelper
     {
+       public static List<string> Statuses =new List<string>{"F","D","R","A"};
         public static string GetUnifiedStatus(string transactionStatus)
-        {
+        { 
             string status = null;
             switch (transactionStatus.ToLower())
             {
@@ -25,6 +30,11 @@
             }
 
             return status;
+        }
+
+        public static bool IsAppropriateStatus(string status)
+        {
+            return Statuses.Any(x => x.Equals(status, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

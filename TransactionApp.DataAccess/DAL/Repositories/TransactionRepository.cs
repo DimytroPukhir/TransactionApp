@@ -61,8 +61,8 @@ namespace TransactionApp.DataAccess.DAL.Repositories
             var newTransactionEntity = new TransactionEntity
             {
                 Id = Guid.NewGuid(),
-                PublicId = model.publicId,
-                Code = model.Code, Amount = model.Amount.Value, Date = model.Date, Status = model.Status
+                PublicId = model.PublicId,
+                Code = model.Code, Amount = model.Amount.Value, Date = model.Date.Value, Status = model.Status
             };
             _context.Transactions.Add(newTransactionEntity);
         }

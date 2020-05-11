@@ -1,81 +1,62 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Http.Filters;
+using System.Web.Mvc;
+using FluentValidation;
 using Newtonsoft.Json;
+using NLog;
 using TransactionApp.Common.Exceptions;
+using IExceptionFilter = System.Web.Mvc.IExceptionFilter;
 
 namespace TransactionApp.Filters
 {
-    public class HandleExceptionsAttribute:ExceptionFilterAttribute
-    { public override void OnException(HttpActionExecutedContext context)
+    public class HandleExceptionsAttribute:IExceptionFilter
+    {  protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        public  void OnException(ExceptionContext filterContext)
         {
-            if (TryCreateResponse(context.Exception, out var response))
+            if (TryCreateResponse(filterContext.Exception, out var response))
             {
-                context.Response = response;
-            }
-            else
-            {
-                base.OnException(context);
+                filterContext.Result = response.Item2;
+                filterContext.HttpContext.Response.StatusCode =(int)response.Item1 ;
+                filterContext.ExceptionHandled = true;
+                Logger.Error(response.Item2);
             }
         }
 
-        public override async Task OnExceptionAsync(HttpActionExecutedContext context, CancellationToken cancellationToken)
-        {
-            if (TryCreateResponse(context.Exception, out var response))
-            {
-                context.Response = response;
-            }
-            else
-            {
-                await base.OnExceptionAsync(context, cancellationToken);
-            }
-        }
-         private bool TryCreateResponse(Exception e, out HttpResponseMessage response)
+
+         private static bool TryCreateResponse(Exception e, out Tuple<HttpStatusCode,ContentResult> response)
         {
             response = null;
 
             switch (e.GetType().Name)
             {
-                case nameof(BadRequestResponse):
-                    var invalidModelException = (BadRequestResponse) e;
-                    var error = new BadRequestResponse(invalidModelException.Errors);
-                    var json = JsonConvert.SerializeObject(error);
-                    response = CreateErrorResponse(json, contentType: "application/json");
+                case nameof(InvalidFileException):
+                    var invalidModelException = (InvalidFileException) e;
+                    var error = new InvalidFileException(invalidModelException.Errors);
+                    var json = JsonConvert.SerializeObject(error.Errors,Formatting.Indented);
+                    response =  CreateErrorResponse(json, contentType: "application/json");
 
                     break;
+                case nameof(ValidationException):
+                    var validationException = (ValidationException) e;
+                    var validationJson = JsonConvert.SerializeObject(validationException.Errors.Select(x=>new {x.PropertyName,x.ErrorMessage}),Formatting.Indented);
+                    response =  CreateErrorResponse(validationJson, contentType: "application/json");
 
-                // case nameof(DeleteDependenciesException):
-                //     var deleteDependenciesException = (DeleteDependenciesException) e;
-                //     var dependencyJson = JsonConvert.SerializeObject(deleteDependenciesException.DependenciesValidationResult);
-                //     response = CreateErrorResponse(dependencyJson, HttpStatusCode.BadRequest, contentType: "application/json");
-                //
-                //     break;
+                    break;
             }
 
             return response != null;
         }
-         private static HttpResponseMessage CreateErrorResponse(string message,
+         private static Tuple<HttpStatusCode,ContentResult> CreateErrorResponse(string message,
              HttpStatusCode code = HttpStatusCode.BadRequest,
              string contentType = "text/plain")
          {
-             var result = new HttpResponseMessage(code)
+             var result = new ContentResult
              {
-                 Content = new StringContent(message, Encoding.UTF8, contentType)
+                 Content = message,ContentEncoding = Encoding.UTF8,ContentType = contentType
              };
-
-             result.Headers.CacheControl = new CacheControlHeaderValue
-             {
-                 NoCache = true,
-                 NoStore = true,
-             };
-
-             return result;
+             return new Tuple<HttpStatusCode, ContentResult>(code,result);
          }
-        
     }
 }
